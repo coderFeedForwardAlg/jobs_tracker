@@ -1,0 +1,4 @@
+a users should have, id, skills
+
+job should have, id, status (applyed, not applyed, regected ...), person contact info, applied date (may be null)
+
