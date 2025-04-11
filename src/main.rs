@@ -1,5 +1,4 @@
 
-
 // https://xata.io/docs/rust-sqlx
 use sqlx::FromRow;
 use sqlx::{Connection, PgConnection};
@@ -17,7 +16,6 @@ async fn main()  -> Result<(), sqlx::Error> {
     let email = "bobyy@gmail.com";
     let hash = "aaaaa";
 
-    let query = format!("INSERT INTO {} (username, email, password_hash) VALUES($1, $2, $3) RETURNING email", table);
 
     #[derive(Debug, FromRow)] 
     struct UserRow {
@@ -31,10 +29,13 @@ async fn main()  -> Result<(), sqlx::Error> {
             [self.username.clone(), self.email.clone(), self.password_hash.clone()]
         }
     }
-    let questions = vec!["whats you username", "what your email", "whats you password"];
+    println!("time to sign up");
+        let query = format!("INSERT INTO users (username, email, password_hash) VALUES($1, $2, $3) RETURNING email");
+let questions = vec!["whats you username", "what your email", "whats you password"];
     let mut answers = Vec::new();
     let mut new_row = UserRow {username: String::new(), email: String::new(), password_hash: String::new()};
     for info in questions {
+        println!("{}", info);
         let mut user_input = String::new();
         io::stdin().read_line(&mut user_input).expect("cant read lined");
         answers.push(user_input);
@@ -46,13 +47,12 @@ async fn main()  -> Result<(), sqlx::Error> {
     // let Vec<String> // make vecter of strings and bind each one into the querey (use loop to get
     // all infor for querey add push to vec) 
     
-    let _res: (i32,) = sqlx::query_as(&query)
+    let _res: (String,) = sqlx::query_as(&query)
         .bind(new_row.username)
         .bind(new_row.email)
         .bind(new_row.password_hash)
         .fetch_one(&mut pool)
         .await?;
-
 
     let select_query = sqlx::query_as::<_, UserRow>("SELECT * FROM Users");
     let user_rows: Vec<UserRow> = select_query.fetch_all(&mut pool).await?;
@@ -63,5 +63,58 @@ async fn main()  -> Result<(), sqlx::Error> {
     Ok(())
     
 }
+
+// async fn add_user(pool: &PgConnection) -> Result<(), sqlx::Error> {
+//     let query = format!("INSERT INTO users (username, email, password_hash) VALUES($1, $2, $3) RETURNING email");
+// let questions = vec!["whats you username", "what your email", "whats you password"];
+//     let mut answers = Vec::new();
+//     let mut new_row = UserRow {username: String::new(), email: String::new(), password_hash: String::new()};
+//     for info in questions {
+//         println!("{}", info);
+//         let mut user_input = String::new();
+//         io::stdin().read_line(&mut user_input).expect("cant read lined");
+//         answers.push(user_input);
+//     }
+//     new_row.username = answers[0].clone();
+//     new_row.email = answers[1].clone();
+//     new_row.password_hash = answers[2].clone();
+//     
+//     // let Vec<String> // make vecter of strings and bind each one into the querey (use loop to get
+//     // all infor for querey add push to vec) 
+//     
+//     let _res: (String,) = sqlx::query_as(&query)
+//         .bind(new_row.username)
+//         .bind(new_row.email)
+//         .bind(new_row.password_hash)
+//         .fetch_one(&mut pool)
+//         .await?;
+//
+// let questions = vec!["whats you username", "what your email", "whats you password"];
+//     let mut answers = Vec::new();
+//     let mut new_row = UserRow {username: String::new(), email: String::new(), password_hash: String::new()};
+//     for info in questions {
+//         println!("{}", info);
+//         let mut user_input = String::new();
+//         io::stdin().read_line(&mut user_input).expect("cant read lined");
+//         answers.push(user_input);
+//     }
+//     new_row.username = answers[0].clone();
+//     new_row.email = answers[1].clone();
+//     new_row.password_hash = answers[2].clone();
+//     
+//     // let Vec<String> // make vecter of strings and bind each one into the querey (use loop to get
+//     // all infor for querey add push to vec) 
+//     
+//     let _res: (String,) = sqlx::query_as(&query)
+//         .bind(new_row.username)
+//         .bind(new_row.email)
+//         .bind(new_row.password_hash)
+//         .fetch_one(&mut pool)
+//         .await?;
+//     Ok(())
+//
+// }
+//
+//
 // password = password 
 // user = user
